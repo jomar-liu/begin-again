@@ -160,11 +160,17 @@ function Walkthrough({ dateString, initialData, onFinish, onCancel }) {
     setScores(prev => ({ ...prev, [id]: Number(value) }));
   };
 
+  const onCancelClick = () => {
+    if (window.confirm("Are you sure you want to cancel? Any unsaved input will be lost.")) {
+      onCancel();
+    }
+  };
+
   return (
     <div className="step-container">
       <div className="step-header">
-        <button className="btn" style={{ padding: '6px 12px', fontSize: '0.85rem', width: 'auto' }} onClick={onCancel}>
-           Close
+        <button className="btn" style={{ padding: '6px 12px', fontSize: '0.85rem', width: 'auto' }} onClick={onCancelClick}>
+           Cancel
         </button>
         <span className="step-progress">Step {step} of {totalSteps}</span>
       </div>
@@ -176,7 +182,7 @@ function Walkthrough({ dateString, initialData, onFinish, onCancel }) {
         <div className="step-content glass-card">
           <h1 className="serif" style={{ color: 'var(--accent-gold-light)', margin: '40px 0' }}>Come, Holy Spirit!</h1>
           <div className="prayer-text" style={{ fontSize: '1rem', color: 'var(--text-secondary)', marginBottom: '40px' }}>
-            Take a deep breath and invite the Holy Spirit to guide your reflection.
+            Invite the Holy Spirit to guide your reflection.
           </div>
           <div className="button-group">
             <button className="btn btn-primary" onClick={nextStep}>Next</button>
