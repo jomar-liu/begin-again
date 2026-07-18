@@ -54,13 +54,14 @@ export function getShortDateName(dateString) {
 }
 
 /**
- * Computes average of an object of scores (1-5 scale)
+ * Computes score out of 10 for Plan of Life (Yes/No boolean values)
  */
 export function computeAverage(scoresObj) {
   if (!scoresObj) return 0;
   const values = Object.values(scoresObj);
   if (values.length === 0) return 0;
   
-  const sum = values.reduce((acc, curr) => acc + curr, 0);
-  return Number((sum / values.length).toFixed(1));
+  // Count how many are true (Yes)
+  const sum = values.reduce((acc, curr) => acc + (curr ? 1 : 0), 0);
+  return sum;
 }
