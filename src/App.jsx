@@ -45,7 +45,7 @@ export default function App() {
       try {
         await navigator.share({
           title: 'Begin Again',
-          text: 'Begin Again - A simple spiritual journal & plan of life tracking app.',
+          text: 'Begin Again - A simple examination of conscience & plan of life tracking app.',
           url: window.location.href
         });
       } catch (err) {
