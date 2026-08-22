@@ -489,33 +489,3 @@ h2 {
 .plan-item-toggle.read-only:active {
   transform: none;
 }
-
-/* =====================
-   PWA IOS PROMPT MODAL
-   ===================== */
-.ios-prompt-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-  padding: 20px;
-}
-
-.ios-prompt-card {
-  width: 100%;
-  max-width: 400px;
-  animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}

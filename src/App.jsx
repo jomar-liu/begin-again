@@ -40,53 +40,6 @@ export default function App() {
     localStorage.setItem('beginAgainTheme', theme);
   }, [theme]);
 
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstallBtn, setShowInstallBtn] = useState(false);
-  const [showIOSPrompt, setShowIOSPrompt] = useState(false);
-
-  useEffect(() => {
-    // Check if running in standalone mode (already installed)
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    
-    if (isStandalone) {
-      setShowInstallBtn(false);
-      return;
-    }
-
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    
-    // For iOS users (Safari), show the button so we can guide them
-    if (isIOS) {
-      setShowInstallBtn(true);
-    }
-
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstallBtn(true);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    if (isIOS) {
-      setShowIOSPrompt(true);
-    } else if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        setDeferredPrompt(null);
-        setShowInstallBtn(false);
-      }
-    }
-  };
-
   const handleShareClick = async () => {
     if (navigator.share) {
       try {
@@ -152,8 +105,6 @@ export default function App() {
           onStartDay={handleStartDay} 
           theme={theme} 
           onToggleTheme={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')} 
-          showInstallBtn={showInstallBtn}
-          onInstallClick={handleInstallClick}
           onShareClick={handleShareClick}
         />
       )}
@@ -175,45 +126,11 @@ export default function App() {
           onCancel={handleCancel}
         />
       )}
-
-      {showIOSPrompt && (
-        <div className="ios-prompt-overlay" onClick={() => setShowIOSPrompt(false)}>
-          <div className="ios-prompt-card glass-card" onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 className="serif" style={{ color: 'var(--accent-gold)' }}>Install App</h3>
-              <button 
-                className="control-btn" 
-                style={{ width: '28px', height: '28px', fontSize: '0.8rem', padding: 0 }} 
-                onClick={() => setShowIOSPrompt(false)}
-              >
-                ✕
-              </button>
-            </div>
-            <p style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-primary)' }}>
-              To install <strong>Begin Again</strong> on your home screen:
-            </p>
-            <ol style={{ paddingLeft: '20px', marginTop: '12px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-              <li style={{ marginBottom: '10px' }}>
-                Tap the <strong>Share</strong> button at the bottom of the screen (or top on iPad):
-                <div style={{ display: 'inline-flex', alignItems: 'center', verticalAlign: 'middle', marginLeft: '6px', background: 'var(--btn-secondary-bg)', padding: '4px', borderRadius: '6px' }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M12 2v13M17 7l-5-5-5 5"></path>
-                  </svg>
-                </div>
-              </li>
-              <li>
-                Scroll down the list and select <strong>'Add to Home Screen'</strong>.
-              </li>
-            </ol>
-          </div>
-        </div>
-      )}
     </>
   );
 }
 
-function Dashboard({ appData, onStartDay, theme, onToggleTheme, showInstallBtn, onInstallClick, onShareClick }) {
+function Dashboard({ appData, onStartDay, theme, onToggleTheme, onShareClick }) {
   const last7Days = getLast7Days();
   const [perfExpanded, setPerfExpanded] = useState(false);
 
@@ -256,20 +173,13 @@ function Dashboard({ appData, onStartDay, theme, onToggleTheme, showInstallBtn, 
       <div className="dashboard-header">
         <h1 className="serif">Begin Again</h1>
         <div className="header-controls">
-          {showInstallBtn && (
-            <button className="control-btn" onClick={onInstallClick} aria-label="Install app">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-            </button>
-          )}
           <button className="control-btn" onClick={onShareClick} aria-label="Share app">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-              <polyline points="16 6 12 2 8 6" />
-              <line x1="12" y1="2" x2="12" y2="15" />
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
             </svg>
           </button>
           <button className="control-btn" onClick={onToggleTheme} aria-label="Toggle theme">
